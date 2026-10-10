@@ -5,5 +5,7 @@ import tailwindcss from '@tailwindcss/vite'
 export default defineConfig({
   plugins: [react(), tailwindcss()],
   define: { 'process.env': {} },
+  // Several dev servers can run side by side (design, capture, review); each gets its own dep cache.
+  cacheDir: process.env.VITE_CACHE_DIR || 'node_modules/.vite',
   build: { chunkSizeWarningLimit: 900 },
 })
