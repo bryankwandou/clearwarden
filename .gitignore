@@ -1,0 +1,15 @@
+node_modules
+dist
+dist-android
+*.local
+.vercel
+.env*
+docs/video/*.webm
+promo/node_modules
+promo/out/*.tmp
+android/.gradle
+android/app/build
+android/build
+android/local.properties
+*.keystore
+*.jks

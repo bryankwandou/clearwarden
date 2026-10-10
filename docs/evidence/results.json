@@ -1,0 +1,107 @@
+[
+  {
+    "name": "landing renders hero",
+    "ok": true,
+    "detail": ""
+  },
+  {
+    "name": "Indonesian copy loads",
+    "ok": true,
+    "detail": ""
+  },
+  {
+    "name": "one-tap ring runs clean, scan, boost",
+    "ok": true,
+    "detail": ""
+  },
+  {
+    "name": "EICAR flagged as threat",
+    "ok": true,
+    "detail": ""
+  },
+  {
+    "name": "disguised binary detected",
+    "ok": true,
+    "detail": ""
+  },
+  {
+    "name": "double extension detected",
+    "ok": true,
+    "detail": ""
+  },
+  {
+    "name": "plain text left clean",
+    "ok": true,
+    "detail": ""
+  },
+  {
+    "name": "malware test domain blocked",
+    "ok": false,
+    "detail": ""
+  },
+  {
+    "name": "safe domain passes",
+    "ok": true,
+    "detail": ""
+  },
+  {
+    "name": "duplicate group found (resized copy)",
+    "ok": false,
+    "detail": ""
+  },
+  {
+    "name": "vault stores encrypted file",
+    "ok": true,
+    "detail": ""
+  },
+  {
+    "name": "vault bytes are not plaintext",
+    "ok": true,
+    "detail": ""
+  },
+  {
+    "name": "wrong PIN rejected",
+    "ok": false,
+    "detail": ""
+  },
+  {
+    "name": "vault decrypts back to original",
+    "ok": true,
+    "detail": ""
+  },
+  {
+    "name": "boost reads device stats",
+    "ok": true,
+    "detail": ""
+  },
+  {
+    "name": "speed test completes",
+    "ok": true,
+    "detail": ""
+  },
+  {
+    "name": "speed numbers present",
+    "ok": false,
+    "detail": ""
+  },
+  {
+    "name": "receipt written to Solana devnet",
+    "ok": true,
+    "detail": ""
+  },
+  {
+    "name": "receipt verified from chain",
+    "ok": true,
+    "detail": ""
+  },
+  {
+    "name": "no uncaught page errors",
+    "ok": true,
+    "detail": ""
+  },
+  {
+    "name": "no horizontal scroll at 390px",
+    "ok": true,
+    "detail": ""
+  }
+]

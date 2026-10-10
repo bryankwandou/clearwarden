@@ -1,0 +1,61 @@
+@import url('https://fonts.googleapis.com/css2?family=Inter+Tight:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap');
+@import 'tailwindcss';
+
+@theme {
+  --color-ink: #0A0F0E;
+  --color-ink-2: #101816;
+  --color-ink-3: #17221F;
+  --color-line: #22302C;
+  --color-fog: #9AABA5;
+  --color-paper: #EEF5F2;
+  --color-mint: #34E0A1;
+  --color-mint-deep: #0E9F8A;
+  --color-amber: #F6C453;
+  --color-rose: #FF6B6B;
+  --font-sans: 'Inter Tight', ui-sans-serif, system-ui, sans-serif;
+  --font-mono: 'JetBrains Mono', ui-monospace, monospace;
+}
+
+:root { color-scheme: dark; }
+html { scroll-behavior: smooth; }
+body { background: var(--color-ink); color: var(--color-paper); font-family: var(--font-sans); -webkit-font-smoothing: antialiased; }
+::selection { background: #34E0A155; }
+:focus-visible { outline: 2px solid var(--color-mint); outline-offset: 3px; border-radius: 8px; }
+
+.grain::before {
+  content: ''; position: fixed; inset: 0; pointer-events: none; z-index: 60; opacity: .05;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='160' height='160'%3E%3Cfilter id='n'%3E%3CfeTurbulence baseFrequency='.9' numOctaves='2'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+}
+
+.card { background: linear-gradient(180deg, #121B19 0%, #0E1513 100%); border: 1px solid var(--color-line); border-radius: 20px; }
+.card-hover { transition: transform .35s cubic-bezier(.2,.8,.2,1), border-color .35s, box-shadow .35s; }
+.card-hover:hover { transform: translateY(-4px); border-color: #34E0A166; box-shadow: 0 24px 60px -30px #34E0A155; }
+
+.btn { display: inline-flex; align-items: center; justify-content: center; gap: .5rem; height: 44px; padding: 0 18px; border-radius: 999px; font-weight: 600; font-size: 15px; transition: transform .15s, background .2s, opacity .2s; }
+.btn:active { transform: scale(.97); }
+.btn:disabled { opacity: .45; pointer-events: none; }
+.btn-primary { background: var(--color-mint); color: #04130E; }
+.btn-primary:hover { background: #5CF0B8; }
+.btn-ghost { border: 1px solid var(--color-line); color: var(--color-paper); }
+.btn-ghost:hover { background: #ffffff0d; }
+
+.reveal { opacity: 0; transform: translateY(24px); transition: opacity .8s cubic-bezier(.2,.8,.2,1), transform .8s cubic-bezier(.2,.8,.2,1); }
+.reveal.in { opacity: 1; transform: none; }
+
+@keyframes spin-slow { to { transform: rotate(360deg); } }
+@keyframes pulse-ring { 0% { transform: scale(.9); opacity: .55; } 100% { transform: scale(1.35); opacity: 0; } }
+@keyframes float { 0%,100% { transform: translateY(0); } 50% { transform: translateY(-10px); } }
+@keyframes marquee { to { transform: translateX(-50%); } }
+@keyframes scanline { 0% { transform: translateY(-100%); } 100% { transform: translateY(100%); } }
+@keyframes shimmer { to { background-position: 200% 0; } }
+.animate-spin-slow { animation: spin-slow 14s linear infinite; }
+.animate-pulse-ring { animation: pulse-ring 2.4s cubic-bezier(.2,.8,.2,1) infinite; }
+.animate-float { animation: float 6s ease-in-out infinite; }
+.animate-marquee { animation: marquee 40s linear infinite; }
+.shimmer-text { background: linear-gradient(90deg, #EEF5F2 0%, #34E0A1 25%, #EEF5F2 50%) 0 0 / 200% 100%; -webkit-background-clip: text; background-clip: text; color: transparent; animation: shimmer 6s linear infinite; }
+
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after { animation: none !important; transition: none !important; }
+  .reveal { opacity: 1; transform: none; }
+}
+@keyframes fadein { from { opacity: 0; transform: translateY(8px); } to { opacity: 1; transform: none; } }
