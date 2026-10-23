@@ -36,7 +36,7 @@
   },
   {
     "name": "malware test domain blocked",
-    "ok": false,
+    "ok": true,
     "detail": ""
   },
   {
@@ -46,8 +46,8 @@
   },
   {
     "name": "duplicate group found (resized copy)",
-    "ok": false,
-    "detail": ""
+    "ok": true,
+    "detail": "GROUPS\n1"
   },
   {
     "name": "vault stores encrypted file",
@@ -61,7 +61,7 @@
   },
   {
     "name": "wrong PIN rejected",
-    "ok": false,
+    "ok": true,
     "detail": ""
   },
   {
@@ -81,18 +81,13 @@
   },
   {
     "name": "speed numbers present",
-    "ok": false,
-    "detail": ""
+    "ok": true,
+    "detail": "DOWNLOAD 0.7 Mbps"
   },
   {
     "name": "receipt written to Solana devnet",
-    "ok": true,
-    "detail": ""
-  },
-  {
-    "name": "receipt verified from chain",
-    "ok": true,
-    "detail": ""
+    "ok": false,
+    "detail": "1 flagged Threat The devnet wallet is empty. Fund it from the wallet card first."
   },
   {
     "name": "no uncaught page errors",

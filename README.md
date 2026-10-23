@@ -1,32 +1,62 @@
-# React + TypeScript + Vite
+# Clearwarden
 
-This template provides a minimal setup to get React working in Vite with HMR and some Oxlint rules.
+A phone, tablet and laptop cleaner that does its work on your device. Nothing is uploaded. Every result can be stamped onto Solana devnet as a receipt that anyone can check.
 
-Currently, two official plugins are available:
+- **Web app:** https://clearwarden.vercel.app
+- **Android APK (debug build):** [`release/clearwarden-debug.apk`](release/clearwarden-debug.apk)
+- **Languages:** English (default) and Bahasa Indonesia. Switch with the EN/ID button in the header.
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Oxc](https://oxc.rs)
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/)
+## What it does
 
-## React Compiler
+| Feature | Web (any browser) | Android APK | How it works |
+|---|---|---|---|
+| Malware file scan | Yes | Yes | SHA-256 match against a known-bad list, plus heuristics: disguised executables, double extensions, macro documents, PDFs with active content, obfuscated scripts, sideloaded APKs. Self-test with the EICAR file. |
+| Link / domain check | Yes | Yes | Cloudflare malware-blocking DNS over HTTPS. A `0.0.0.0` answer means the domain is on the block list. |
+| Junk, WhatsApp media, APK and large-file sweep | Chrome / Edge on desktop | Yes (inside the app's web view) | File System Access API. You pick a folder, review the list, then delete. Nothing is deleted without a tap. |
+| Duplicate photos | Yes | Yes | Perceptual difference hash (9×8 dHash) with Hamming distance ≤ 5, so resized copies still match. |
+| Vault (hidden files) | Yes | Yes | AES-256-GCM. Key from PBKDF2-SHA256, 310,000 rounds. Stored in IndexedDB. Optional Face ID, fingerprint or Windows Hello gate through WebAuthn. |
+| Network speed test | Yes | Yes | Ping, jitter, download and upload against Cloudflare's speed endpoints. |
+| Data usage | This session only | This session only | Resource timing of the page. A browser cannot read other apps' traffic. |
+| Boost / clean this app's cache | Yes | Yes | Clears Cache Storage, service workers and session data for Clearwarden itself, and shows device memory, CPU threads, battery and connection type. |
+| Solana devnet receipts | Yes | Yes | A burner keypair in the browser writes `cw1|kind|sha256|summary` with the Memo program. `#/verify?sig=…` reads it back from chain. |
 
-The React Compiler is not enabled on this template because of its impact on dev & build performances. To add it, see [this documentation](https://react.dev/learn/react-compiler/installation).
+## What it does not do, and why
 
-## Expanding the Oxlint configuration
+Some items in the brief need system permissions that no website has and that a plain app wrapper does not get either. They are listed on the in-app "Native" page and are not faked:
 
-If you are developing a production application, we recommend enabling type-aware lint rules by installing `oxlint-tsgolint` and editing `.oxlintrc.json`:
+- Clearing other apps' caches, killing other apps to "boost RAM", or scanning the whole phone storage. Android only allows this to system apps or with root.
+- Blocking spam calls. Needs Android's `CallScreeningService` role, which is a native module that is not built yet.
+- Hiding other apps, or a root on/off switch. These need a device-owner or root, and a root toggle is not something an app can safely offer.
+- A free unlimited VPN. Running a VPN means running servers. The link check uses Cloudflare's filtered DNS instead.
 
-```json
-{
-  "$schema": "./node_modules/oxlint/configuration_schema.json",
-  "plugins": ["react", "typescript", "oxc"],
-  "options": {
-    "typeAware": true
-  },
-  "rules": {
-    "react/rules-of-hooks": "error",
-    "react/only-export-components": ["warn", { "allowConstantExport": true }]
-  }
-}
+## Run it
+
+```bash
+npm install
+npm run dev          # http://localhost:5173
+npm run build && npx vite preview --port 4173
+node scripts/e2e.mjs # browser harness, writes docs/evidence and docs/video
 ```
 
-See the [Oxlint rules documentation](https://oxc.rs/docs/guide/usage/linter/rules) for the full list of rules and categories.
+`FUND_FROM=/path/to/devnet-keypair.json node scripts/e2e.mjs` funds the in-browser burner wallet with the Solana CLI instead of the devnet faucet, which is often rate-limited.
+
+### Android
+
+```bash
+npm run build
+npx cap sync android
+cd android && ./gradlew assembleDebug
+```
+
+## Proof
+
+- Screenshots from the harness: [`docs/evidence/`](docs/evidence/)
+- Harness results: [`docs/evidence/results.json`](docs/evidence/results.json)
+- Walkthrough video recorded by the harness: [`docs/video/`](docs/video/)
+- A devnet receipt written during the harness run: [`docs/evidence/devnet-receipt.txt`](docs/evidence/devnet-receipt.txt)
+
+## Stack
+
+Vite, React 19, TypeScript, Tailwind CSS 4, `@solana/web3.js`, Capacitor 8, Playwright.
+
+Devnet tokens have no value. This app never touches mainnet.
