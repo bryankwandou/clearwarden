@@ -2,7 +2,7 @@
 
 A phone, tablet and laptop cleaner that does its work on your device. Nothing is uploaded. Every result can be stamped onto Solana devnet as a receipt that anyone can check.
 
-- **Web app:** https://bryankwandou.github.io/clearwarden/
+- **Web app:** https://clearwarden.vercel.app (mirror: https://bryankwandou.github.io/clearwarden/)
 - **Android APK (debug build):** [`release/clearwarden-debug.apk`](release/clearwarden-debug.apk)
 - **Languages:** English (default) and Bahasa Indonesia. Switch with the EN/ID button in the header.
 
