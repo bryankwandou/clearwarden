@@ -1,8 +1,8 @@
-# Clearwarden
+﻿# Clearwarden
 
 A phone, tablet and laptop cleaner that does its work on your device. Nothing is uploaded. Every result can be stamped onto Solana devnet as a receipt that anyone can check.
 
-- **Web app:** https://clearwarden.vercel.app
+- **Web app:** https://bryankwandou.github.io/clearwarden/
 - **Android APK (debug build):** [`release/clearwarden-debug.apk`](release/clearwarden-debug.apk)
 - **Languages:** English (default) and Bahasa Indonesia. Switch with the EN/ID button in the header.
 
@@ -13,12 +13,12 @@ A phone, tablet and laptop cleaner that does its work on your device. Nothing is
 | Malware file scan | Yes | Yes | SHA-256 match against a known-bad list, plus heuristics: disguised executables, double extensions, macro documents, PDFs with active content, obfuscated scripts, sideloaded APKs. Self-test with the EICAR file. |
 | Link / domain check | Yes | Yes | Cloudflare malware-blocking DNS over HTTPS. A `0.0.0.0` answer means the domain is on the block list. |
 | Junk, WhatsApp media, APK and large-file sweep | Chrome / Edge on desktop | Yes (inside the app's web view) | File System Access API. You pick a folder, review the list, then delete. Nothing is deleted without a tap. |
-| Duplicate photos | Yes | Yes | Perceptual difference hash (9×8 dHash) with Hamming distance ≤ 5, so resized copies still match. |
+| Duplicate photos | Yes | Yes | Perceptual difference hash (9Ã—8 dHash) with Hamming distance â‰¤ 5, so resized copies still match. |
 | Vault (hidden files) | Yes | Yes | AES-256-GCM. Key from PBKDF2-SHA256, 310,000 rounds. Stored in IndexedDB. Optional Face ID, fingerprint or Windows Hello gate through WebAuthn. |
 | Network speed test | Yes | Yes | Ping, jitter, download and upload against Cloudflare's speed endpoints. |
 | Data usage | This session only | This session only | Resource timing of the page. A browser cannot read other apps' traffic. |
 | Boost / clean this app's cache | Yes | Yes | Clears Cache Storage, service workers and session data for Clearwarden itself, and shows device memory, CPU threads, battery and connection type. |
-| Solana devnet receipts | Yes | Yes | A burner keypair in the browser writes `cw1|kind|sha256|summary` with the Memo program. `#/verify?sig=…` reads it back from chain. |
+| Solana devnet receipts | Yes | Yes | A burner keypair in the browser writes `cw1|kind|sha256|summary` with the Memo program. `#/verify?sig=â€¦` reads it back from chain. |
 
 ## What it does not do, and why
 
