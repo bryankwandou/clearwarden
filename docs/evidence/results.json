@@ -82,12 +82,17 @@
   {
     "name": "speed numbers present",
     "ok": true,
-    "detail": "DOWNLOAD 0.7 Mbps"
+    "detail": "DOWNLOAD 3.9 Mbps"
   },
   {
     "name": "receipt written to Solana devnet",
-    "ok": false,
-    "detail": "1 flagged Threat The devnet wallet is empty. Fund it from the wallet card first."
+    "ok": true,
+    "detail": ""
+  },
+  {
+    "name": "receipt verified from chain",
+    "ok": true,
+    "detail": ""
   },
   {
     "name": "no uncaught page errors",
