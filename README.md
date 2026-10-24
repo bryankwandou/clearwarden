@@ -3,7 +3,8 @@
 A phone, tablet and laptop cleaner that does its work on your device. Nothing is uploaded. Every result can be stamped onto Solana devnet as a receipt that anyone can check.
 
 - **Web app:** https://clearwarden.vercel.app (mirror: https://bryankwandou.github.io/clearwarden/)
-- **Android APK (debug build):** [`release/clearwarden-debug.apk`](release/clearwarden-debug.apk)
+- **Install as a web app:** open the site in Chrome or Edge and tap "Install app". It works offline after the first visit.
+- **Android APK (release, v1.1):** [`release/clearwarden.apk`](release/clearwarden.apk), checksum in [`clearwarden.apk.sha256`](release/clearwarden.apk.sha256). Signed with the Clearwarden release key, certificate SHA-256 `105f751082f0888ad1d22c4d05868b5bd696650fd1ae567df0588c3752a0b55a`. The only permission it asks for is `INTERNET`. If you installed the earlier debug build, uninstall it first, because it was signed with a different key.
 - **Languages:** English (default) and Bahasa Indonesia. Switch with the EN/ID button in the header.
 
 ## What it does
@@ -45,15 +46,17 @@ node scripts/e2e.mjs # browser harness, writes docs/evidence and docs/video
 ```bash
 npm run build
 npx cap sync android
-cd android && ./gradlew assembleDebug
+cd android && ./gradlew assembleRelease
 ```
+
+The release build signs itself when `~/.clearwarden/keystore.properties` exists (or a file named by `CW_KEYSTORE_PROPS`) with `storeFile`, `storePassword`, `keyAlias` and `keyPassword`. The key is not in this repo. Without it, Gradle produces an unsigned APK.
 
 ## Proof
 
 - Screenshots from the harness: [`docs/evidence/`](docs/evidence/)
 - Harness results, 21/21 passing: [`docs/evidence/results.json`](docs/evidence/results.json)
 - Walkthrough video recorded by the harness (2 min 9 s): [`docs/video/walkthrough.mp4`](docs/video/walkthrough.mp4)
-- A devnet receipt written and then read back from chain during the harness run: [3SAkeLNC…uveVL48Pm](https://explorer.solana.com/tx/3SAkeLNCPmTxS2Wz9XXPJ1pwL1v7p3MxepjQGMNfcvLUnrL7kqtE5xMmPHgZFW5nmiZmTjqBKq33Ai2uveVL48Pm?cluster=devnet), memo `cw1|scan|57c9923c…|1f/1flag`
+- A devnet receipt written and then read back from chain during the harness run: [32XtQ64s…TavdinA](https://explorer.solana.com/tx/32XtQ64s653iTFaLnhn55XvXdg5Q26VWNHELEVt21uL9nt6hhu97Tk3UUu5xX5rcJn6Hd9pCno1N25eksTavdinA?cluster=devnet), memo `cw1|scan|57c9923c…|1f/1flag`
 
 ## Stack
 

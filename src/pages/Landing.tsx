@@ -3,8 +3,19 @@ import { useT, type Key } from '../i18n'
 import { Ring, Tilt, useReveal } from '../components/kit'
 import { Mark } from '../components/Logo'
 import { Icon } from './Dashboard'
+import { installState, onInstallChange, promptInstall, type InstallState } from '../lib/install'
 
-const APK_URL = 'https://github.com/bryankwandou/clearwarden/raw/main/release/clearwarden-debug.apk'
+const APK_URL = 'https://github.com/bryankwandou/clearwarden/raw/main/release/clearwarden.apk'
+// The file hash cannot be baked in: the APK bundles this page, so it is read from the checksum file next to it.
+const APK_SUM_URL = 'https://raw.githubusercontent.com/bryankwandou/clearwarden/main/release/clearwarden.apk.sha256'
+// Stays the same across releases as long as the same key signs them.
+const APK_CERT = '105f751082f0888ad1d22c4d05868b5bd696650fd1ae567df0588c3752a0b55a'
+
+function useInstall(): InstallState {
+  const [s, setS] = useState<InstallState>(installState)
+  useEffect(() => onInstallChange(() => setS(installState())), [])
+  return s
+}
 
 function DownloadGlyph({ className = 'w-4 h-4' }: { className?: string }) {
   return (
@@ -14,7 +25,26 @@ function DownloadGlyph({ className = 'w-4 h-4' }: { className?: string }) {
   )
 }
 
+function InstallButton({ className = '' }: { className?: string }) {
+  const { t } = useT()
+  const s = useInstall()
+  const [hint, setHint] = useState(false)
+  if (s === 'native') return null
+  if (s === 'installed') return <span className={`btn btn-ghost ${className} pointer-events-none text-mint`}>&#10003; {t('pwa_done')}</span>
+  const click = async () => { if (s === 'prompt') await promptInstall(); else setHint((h) => !h) }
+  return (
+    <span className="relative inline-flex flex-col">
+      <button type="button" onClick={click} className={`btn btn-ghost btn-lift ${className}`} aria-expanded={s === 'prompt' ? undefined : hint}>
+        <svg viewBox="0 0 24 24" className="w-4 h-4" fill="none" stroke="currentColor" strokeWidth="1.9" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true"><rect x="6" y="2.5" width="12" height="19" rx="2.5" /><path d="M12 7.5v7m0 0-3-3m3 3 3-3" /></svg>
+        {t('pwa_btn')}
+      </button>
+      {hint && <span role="status" className="mt-2 max-w-xs text-xs text-fog leading-relaxed">{t(s === 'ios' ? 'pwa_ios' : 'pwa_manual')}</span>}
+    </span>
+  )
+}
+
 function ApkLink({ className = '' }: { className?: string }) {
+  if (installState() === 'native') return null
   return (
     <a href={APK_URL} className={`btn btn-ghost btn-lift ${className}`} rel="noopener" download>
       <DownloadGlyph />Download APK
@@ -96,14 +126,12 @@ export function Landing() {
         <div className="absolute top-1/3 -right-40 w-[520px] aspect-square rounded-full bg-[radial-gradient(circle,#F6C4530d,transparent_65%)] pointer-events-none hidden lg:block" aria-hidden="true" />
         <div className="relative mx-auto max-w-6xl px-4 pt-14 pb-20 sm:pt-20 lg:pt-24 lg:pb-28 grid lg:grid-cols-[1.15fr_.85fr] gap-14 lg:gap-10 items-center">
           <div className="min-w-0">
-            <span className="reveal inline-flex max-w-full items-center gap-2 rounded-full border border-line bg-ink-2/70 backdrop-blur px-3 py-1.5 text-xs font-mono text-fog">
-              <span className="relative flex w-1.5 h-1.5 shrink-0"><span className="absolute inset-0 rounded-full bg-mint animate-ping opacity-60" /><span className="relative w-1.5 h-1.5 rounded-full bg-mint" /></span>
-              <span className="truncate">{t('hero_kicker')}</span>
-            </span>
+            <Eyebrow>{t('hero_kicker')}</Eyebrow>
             <h1 className="reveal mt-6 text-[2.35rem] sm:text-5xl lg:text-[3.6rem] font-semibold tracking-[-0.03em] leading-[1.06] text-balance lg:text-pretty" style={d(80)}>{t('hero_title')}</h1>
             <p className="reveal mt-6 text-base sm:text-lg text-fog max-w-xl leading-relaxed text-pretty" style={d(160)}>{t('hero_sub')}</p>
             <div className="reveal mt-9 flex flex-col sm:flex-row sm:flex-wrap gap-3" style={d(240)}>
               <a href="#/app" className="btn btn-primary btn-lift btn-lg group">{t('hero_cta')}<span className="transition-transform duration-300 group-hover:translate-x-1" aria-hidden="true">&rarr;</span></a>
+              <InstallButton className="btn-lg" />
               <ApkLink className="btn-lg" />
             </div>
             <a href="#proof" className="reveal link-underline mt-5 inline-flex items-center gap-2 text-sm text-fog hover:text-paper" style={d(300)}>{t('hero_cta2')}<span aria-hidden="true">&darr;</span></a>
@@ -209,6 +237,9 @@ export function Landing() {
         </div>
       </section>
 
+      {/* Install */}
+      <InstallSection />
+
       {/* FAQ */}
       <section className="mx-auto max-w-3xl px-4 pb-24 lg:pb-32">
         <h2 className="reveal text-3xl md:text-4xl font-semibold tracking-[-0.025em]">{t('faq_title')}</h2>
@@ -249,6 +280,47 @@ export function Landing() {
         </div>
       </section>
     </div>
+  )
+}
+
+function InstallSection() {
+  const { t } = useT()
+  const [sum, setSum] = useState<string | null>(null)
+  useEffect(() => {
+    fetch(APK_SUM_URL).then((r) => (r.ok ? r.text() : '')).then((x) => setSum(/^[0-9a-f]{64}/.exec(x.trim())?.[0] ?? null)).catch(() => {})
+  }, [])
+  if (installState() === 'native') return null
+  return (
+    <section id="install" className="scroll-mt-20 mx-auto max-w-6xl px-4 pb-24 lg:pb-32">
+      <h2 className="reveal text-3xl md:text-5xl font-semibold tracking-[-0.025em] leading-[1.08] max-w-3xl text-balance">{t('inst_title')}</h2>
+      <p className="reveal mt-4 text-fog max-w-2xl leading-relaxed">{t('inst_sub')}</p>
+      <div className="mt-12 grid md:grid-cols-2 gap-4">
+        <div className="reveal">
+          <div className="card card-accent-mint h-full p-7">
+            <h3 className="text-mint font-mono text-sm uppercase tracking-widest">{t('pwa_title')}</h3>
+            <p className="mt-4 text-sm text-fog leading-relaxed">{t('pwa_d')}</p>
+            <div className="mt-7"><InstallButton /></div>
+          </div>
+        </div>
+        <div className="reveal" style={{ transitionDelay: '100ms' }}>
+          <div className="card card-accent-amber h-full p-7 min-w-0">
+            <h3 className="text-amber font-mono text-sm uppercase tracking-widest">{t('apk_title')}</h3>
+            <p className="mt-4 text-sm text-fog leading-relaxed">{t('apk_d')}</p>
+            <ol className="mt-6 space-y-3">
+              {(['apk_s1', 'apk_s2', 'apk_s3'] as Key[]).map((k, i) => (
+                <li key={k} className="flex gap-3 text-sm"><span className="shrink-0 w-6 h-6 rounded-full border border-amber/50 text-amber grid place-items-center font-mono text-xs">{i + 1}</span><span className="pt-0.5">{t(k)}</span></li>
+              ))}
+            </ol>
+            <div className="mt-7"><ApkLink /></div>
+            <dl className="mt-7 space-y-3 font-mono text-[11px] text-fog">
+              <div><dt className="uppercase tracking-widest">{t('apk_cert')}</dt><dd className="mt-1 break-all text-paper/80">{APK_CERT}</dd></div>
+              <div><dt className="uppercase tracking-widest">{t('apk_sum')}</dt><dd className="mt-1 break-all text-paper/80">{sum ?? <a href={APK_SUM_URL} className="link-underline" rel="noopener">clearwarden.apk.sha256</a>}</dd></div>
+            </dl>
+            <p className="mt-5 text-xs text-fog leading-relaxed">{t('apk_old')}</p>
+          </div>
+        </div>
+      </div>
+    </section>
   )
 }
 

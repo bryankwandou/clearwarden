@@ -1,0 +1,16 @@
+{
+  "name": "Clearwarden",
+  "short_name": "Clearwarden",
+  "description": "Clean junk, catch disguised files, lock private photos and test your connection. Every run leaves a receipt on Solana devnet.",
+  "id": "./",
+  "start_url": "./#/app",
+  "scope": "./",
+  "display": "standalone",
+  "background_color": "#0A0F0E",
+  "theme_color": "#0A0F0E",
+  "icons": [
+    { "src": "icon-192.png", "sizes": "192x192", "type": "image/png" },
+    { "src": "icon-512.png", "sizes": "512x512", "type": "image/png" },
+    { "src": "icon-maskable-512.png", "sizes": "512x512", "type": "image/png", "purpose": "maskable" }
+  ]
+}
